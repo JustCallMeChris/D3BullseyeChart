@@ -16,4 +16,5 @@ I add these charts in a container to create hopefully an zoomable object.
 
 At the moment I get either one chart instead of two or I see nothing.
 But my html elements tree looks good. I have no idea why I can't see anything.
+
 ![Html Elements Tree](html_elements_tree.png)
