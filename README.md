@@ -14,7 +14,9 @@ I want a way to create dynamic donut subplots.
 In my solution I iterate over a loop to create donut charts (see work in process branch). 
 I add these charts in a container to create hopefully a zoomable object.
 
-At the moment I get either one chart instead of two or I see nothing.
-But my html elements tree looks good. I have no idea why I can't see anything.
+At the moment I get one chart instead of two. 
+I have no idea why I see just one chart instead of two.
 
 ![Html Elements Tree](html_elements_tree.png)
+
+![Actual Chart](my_chart.png)
