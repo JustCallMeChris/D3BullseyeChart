@@ -26,7 +26,7 @@ const pie = d3.pie()
     });
 
 // define the svg donut chart
-const svgContainer = d3.select("body").append("svg")
+var svgContainer = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
@@ -39,29 +39,28 @@ d3.csv("data.csv", function (error, data) {
 
     for (let i = 1; i < 3; i++) {
 
-        const pieChart = d3.select("g")
-            .append("pieChart")
-            .attr("width", width)
-            .attr("height", height)
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        var g = svgContainer.selectAll(".arc")
+            .data(pie(data.splice(0,6)))
+            .enter().append("g")
+            .attr("class", "arc");
 
         let arc = d3.arc()
-            .outerRadius(radius/2*i - 10)
-            .innerRadius(radius/2*i - 70);
+            .outerRadius(radius/2 - 10*i)
+            .innerRadius(radius/2 - 70*i);
 
         // arc for the labels position
         let labelArc = d3.arc()
-            .outerRadius(radius/2*i - 40)
-            .innerRadius(radius/2*i - 40);
+            .outerRadius(radius/2 - 40*i)
+            .innerRadius(radius/2 - 40*i);
 
         // "g element is a container used to pieChart other SVG elements"
-        let arcSlice = pieChart.selectAll(".arc")
-            .data(pie(data.splice(0, data.length / 2)))
+        svgContainer.selectAll(".arc")
+            .data(pie(data.splice(0, 6)))
             .enter().append("arcSlice")
             .attr("class", "arc");
 
         // append path
-        arcSlice.append("path")
+        g.append("path")
             .attr("d", arc)
             .style("fill", function (d) {
                 return color(d.data.name);
@@ -70,7 +69,7 @@ d3.csv("data.csv", function (error, data) {
             .ease(d3.easeLinear);
 
         // append text
-        arcSlice.append("text")
+        g.append("text")
             .transition()
             .ease(d3.easeLinear)
             .duration(0)
@@ -80,6 +79,7 @@ d3.csv("data.csv", function (error, data) {
             .attr("dy", ".35em")
             .text(function (d) {
                 return d.data.name;
-            });
+            })
+            .style("font-size", "10px");
     }
 });
