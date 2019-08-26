@@ -5,7 +5,7 @@ Requirements:
 2. BC is zoomable.
 3. Each donut subplot fragment has a parallel coordinat subplot (example image shows still line charts).
 
-Optional: Zooming from out to in has the effect that the last outer ring (level) dissapears. 
+Optional: Zooming from out to in has the effect that the last outer ring (level) disappears. 
 
 ![Planned Bullseye Chart](planned_bc.png)
 
