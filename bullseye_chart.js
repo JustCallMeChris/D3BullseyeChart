@@ -18,11 +18,11 @@ function zoomFn() {
         .style('transform', 'scale(' + d3.event.transform.k + ')');
 }
 
-// generate pie chart and donut chart
+// generate donut chart
 const pie = d3.pie()
     .sort(null)
     .value(function (d) {
-        return d.min;
+        return d.max;
     });
 
 // define the svg donut chart
@@ -39,23 +39,23 @@ d3.csv("data.csv", function (error, data) {
 
     for (let i = 1; i < 3; i++) {
 
-        var g = svgContainer.selectAll(".arc")
-            .data(pie(data.splice(0,6)))
+        var g = svgContainer.selectAll(".arc"+i)
+            .data(pie(data))
             .enter().append("g")
             .attr("class", "arc");
 
         let arc = d3.arc()
-            .outerRadius(radius/2 - 10*i)
-            .innerRadius(radius/2 - 70*i);
+            .outerRadius(radius/i - 50)
+            .innerRadius(radius/i - 100);
 
         // arc for the labels position
         let labelArc = d3.arc()
-            .outerRadius(radius/2 - 40*i)
-            .innerRadius(radius/2 - 40*i);
+            .outerRadius(radius/i - 50)
+            .innerRadius(radius/i - 50);
 
         // "g element is a container used to pieChart other SVG elements"
         svgContainer.selectAll(".arc")
-            .data(pie(data.splice(0, 6)))
+            .data(pie(data))
             .enter().append("arcSlice")
             .attr("class", "arc");
 
