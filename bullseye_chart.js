@@ -84,7 +84,7 @@ d3.csv("data.csv", function (error, data) {
             .attr("dy", ".35em")
             .text(function (d) {
                 return d.data.name;
-            })
+            }).attr('text-anchor','middle')
             .style("font-size", textSize+"px");
 
         textSize -=1;
