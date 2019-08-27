@@ -8,16 +8,6 @@ const margin = {top: 20, right: 20, bottom: 20, left: 20},
 const color = d3.scaleOrdinal()
     .range(["#BBDEFB", "#90CAF9", "#64B5F6", "#42A5F5", "#2196F3", "#1E88E5", "#1976D2"]);
 
-let zoom = d3.zoom()
-    .scaleExtent([1, 100])
-    .translateExtent([[150, 150], [150, 150]])
-    .on('zoom', zoomFn);
-
-function zoomFn() {
-    d3.select('svg').select('g')
-        .style('transform', 'scale(' + d3.event.transform.k + ')');
-}
-
 // generate donut chart
 const pie = d3.pie()
     .sort(null)
@@ -25,10 +15,22 @@ const pie = d3.pie()
         return d.max;
     });
 
-// define the svg donut chart
+var zoom = d3.zoom()
+    .scaleExtent([1, 100])
+    .translateExtent([[0, 0],[150, 150]])
+    .on('zoom', zoomFn);
+
+function zoomFn() {
+    d3.select('svg').select('g')
+        .style('transform', 'scale(' + d3.event.transform.k + ')');
+}
+
+    // define the svg donut chart
 let svgContainer = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
+    .append("g").style("transform-origin", "50% 50% 0")
+    .call(zoom)
     .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
@@ -39,7 +41,7 @@ let textSize = 10;
 // import data
 d3.csv("data.csv", function (error, data) {
     if (error) throw error;
-    
+
     for (let i = 1; i < 4; i++) {
 
         let dataSubSet = data.splice(0,6);
