@@ -26,36 +26,44 @@ const pie = d3.pie()
     });
 
 // define the svg donut chart
-var svgContainer = d3.select("body").append("svg")
+let svgContainer = d3.select("body").append("svg")
     .attr("width", width)
     .attr("height", height)
     .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+let diffOuterRadius = 0;
+let diffInnerRadius = 60;
+let textSize = 10;
 
 // import data
 d3.csv("data.csv", function (error, data) {
     if (error) throw error;
+    
+    for (let i = 1; i < 4; i++) {
 
-    for (let i = 1; i < 3; i++) {
+        let dataSubSet = data.splice(0,6);
 
-        var g = svgContainer.selectAll(".arc"+i)
-            .data(pie(data))
+        const g = svgContainer.selectAll(".arc" + i)
+            .data(pie(dataSubSet))
             .enter().append("g")
             .attr("class", "arc");
 
         let arc = d3.arc()
-            .outerRadius(radius/i - 50)
-            .innerRadius(radius/i - 100);
+            .outerRadius(radius-diffOuterRadius)
+            .innerRadius(radius-diffInnerRadius);
 
         // arc for the labels position
         let labelArc = d3.arc()
-            .outerRadius(radius/i - 50)
-            .innerRadius(radius/i - 50);
+            .outerRadius(radius-diffOuterRadius)
+            .innerRadius(radius-diffInnerRadius);
 
-        // "g element is a container used to pieChart other SVG elements"
+        diffInnerRadius+=60;
+        diffOuterRadius+=60;
+
+        // "g element is a container used to collect other SVG elements"
         svgContainer.selectAll(".arc")
-            .data(pie(data))
+            .data(pie(dataSubSet))
             .enter().append("arcSlice")
             .attr("class", "arc");
 
@@ -64,15 +72,10 @@ d3.csv("data.csv", function (error, data) {
             .attr("d", arc)
             .style("fill", function (d) {
                 return color(d.data.name);
-            })
-            .transition()
-            .ease(d3.easeLinear);
+            });
 
         // append text
         g.append("text")
-            .transition()
-            .ease(d3.easeLinear)
-            .duration(0)
             .attr("transform", function (d) {
                 return "translate(" + labelArc.centroid(d) + ")";
             })
@@ -80,6 +83,8 @@ d3.csv("data.csv", function (error, data) {
             .text(function (d) {
                 return d.data.name;
             })
-            .style("font-size", "10px");
+            .style("font-size", textSize+"px");
+
+        textSize -=1;
     }
 });
