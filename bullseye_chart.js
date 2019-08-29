@@ -34,6 +34,7 @@ let svgContainer = d3.select("body").append("svg")
     .append("g")
     .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
+
 let diffOuterRadius = 0;
 let diffInnerRadius = 60;
 let textSize = 10;
@@ -88,5 +89,58 @@ d3.csv("data.csv", function (error, data) {
             .style("font-size", textSize+"px");
 
         textSize -=1;
+    }
+
+    let radianList = [12,24,36,48,
+        72,84,96,108,
+        132,144,156,168,
+        192,204,216,228,
+        252, 264, 276, 288,
+        312, 324, 336, 348];
+
+    let radianListBold = [0,60,120,180,240,300];
+
+
+    radianList.forEach(drawParaCoordInnerBorderlines);
+    radianListBold.forEach(drawParaCoordBorderlines);
+
+    function drawParaCoordBorderlines(item, index){
+
+        let radians = item;
+        let angleRadians = radians-90;
+        let radiusInvisibleLine = 50;
+        let radiusLine = radiusInvisibleLine + 180;
+        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180) + 0;
+        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180) + 0;
+        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180) + 0;
+        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180) + 0;
+
+        svgContainer.append("line")
+            .attr("x1", X1)
+            .attr("y1", Y1)
+            .attr("x2", X2)
+            .attr("y2", Y2)
+            .attr("stroke-width", 2)
+            .attr("stroke", "black");
+    }
+
+    function drawParaCoordInnerBorderlines(item, index){
+
+        let radians = item;
+        let angleRadians = radians-90;
+        let radiusInvisibleLine = 50;
+        let radiusLine = radiusInvisibleLine + 180;
+        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180) + 0;
+        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180) + 0;
+        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180) + 0;
+        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180) + 0;
+
+        svgContainer.append("line")
+            .attr("x1", X1)
+            .attr("y1", Y1)
+            .attr("x2", X2)
+            .attr("y2", Y2)
+            .attr("stroke-width", 0.25)
+            .attr("stroke", "black");
     }
 });
