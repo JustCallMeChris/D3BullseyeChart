@@ -12,7 +12,7 @@ const color = d3.scaleOrdinal()
 const pie = d3.pie()
     .sort(null)
     .value(function (d) {
-        return d.max;
+        return d.sliceValue;
     });
 
 var zoom = d3.zoom()
@@ -38,13 +38,31 @@ let svgContainer = d3.select("body").append("svg")
 let diffOuterRadius = 0;
 let diffInnerRadius = 60;
 let textSize = 10;
+let bullsEyeDeep = 3;
+
+let level = 1;
+let dimension = 1;
+
+let radianListPerSlice = [0,12,24,36,48,60];
+
+let fullRadianList = [[0,12,24,36,48,60],[60,72,84,96,108,120],[120,132,144,156,168,180],
+                        [180,192,204,216,228,240],[240,252,264,276,288,300],[300,312,324,336,348,360]];
+
+let radianList = [12,24,36,48,
+    72,84,96,108,
+    132,144,156,168,
+    192,204,216,228,
+    252, 264, 276, 288,
+    312, 324, 336, 348];
+
+let radianListBold = [0,60,120,180,240,300];
 
 // import data
 d3.csv("data.csv", function (error, data) {
     if (error) throw error;
 
-    for (let i = 1; i < 4; i++) {
-
+    for (let i = 1; i <= bullsEyeDeep; i++) {
+        level = i;
         let dataSubSet = data.splice(0,6);
 
         const g = svgContainer.selectAll(".arc" + i)
@@ -89,19 +107,58 @@ d3.csv("data.csv", function (error, data) {
             .style("font-size", textSize+"px");
 
         textSize -=1;
+
+        dataSubSet.forEach(plotDataPerSlice);
     }
 
-    let radianList = [12,24,36,48,
-        72,84,96,108,
-        132,144,156,168,
-        192,204,216,228,
-        252, 264, 276, 288,
-        312, 324, 336, 348];
+    function plotDataPerSlice(item, index){
 
-    let radianListBold = [0,60,120,180,240,300];
+        let dataPerSlice = item;
+        radianListPerSlice.forEach(plotData.bind(null, dataPerSlice));
+        dimension++;
+        if (dimension == 7){
+            dimension = 1;
+        }
+    }
 
+    function plotData(dataPerSlice,item, index){
+
+        for (person = 1; person < 6; person++) {
+            for (time = 1; time < 6; time++) {
+                drawDataline(fullRadianList[dimension-1][time-1],
+                fullRadianList[dimension-1][time],
+                dataPerSlice["p"+person+"t"+time],
+                dataPerSlice["p"+person+"t"+(time+1)],index);
+        }}
+    }
+
+    function drawDataline(item,item2, dY1, dY2, index){
+
+        let radians = item;
+        let radians2 = item2;
+        let angleRadians = radians-90;
+        let angleRadians2 = radians2-90;
+
+        let maxHigh = 230;
+
+        let pointHigh = maxHigh-60*level + parseInt(dY1,10);
+        let pointHigh2 = maxHigh-60*level + parseInt(dY2,10);
+        let X1 = pointHigh * Math.cos(angleRadians*Math.PI/180) ;
+        let Y1 = pointHigh * Math.sin(angleRadians*Math.PI/180);
+        let X2 = pointHigh2 * Math.cos(angleRadians2*Math.PI/180);
+        let Y2 = pointHigh2 * Math.sin(angleRadians2*Math.PI/180);
+
+        svgContainer.append("line")
+            .attr("x1", X1)
+            .attr("y1", Y1)
+            .attr("x2", X2)
+            .attr("y2", Y2)
+            .attr("stroke-width", 0.2)
+            .attr("stroke", "green");
+    }
 
     radianList.forEach(drawParaCoordInnerBorderlines);
+
     radianListBold.forEach(drawParaCoordBorderlines);
 
     function drawParaCoordBorderlines(item, index){
@@ -110,10 +167,10 @@ d3.csv("data.csv", function (error, data) {
         let angleRadians = radians-90;
         let radiusInvisibleLine = 50;
         let radiusLine = radiusInvisibleLine + 180;
-        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180) + 0;
-        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180) + 0;
-        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180) + 0;
-        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180) + 0;
+        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180);
+        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180);
+        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180);
+        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180);
 
         svgContainer.append("line")
             .attr("x1", X1)
@@ -130,10 +187,10 @@ d3.csv("data.csv", function (error, data) {
         let angleRadians = radians-90;
         let radiusInvisibleLine = 50;
         let radiusLine = radiusInvisibleLine + 180;
-        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180) + 0;
-        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180) + 0;
-        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180) + 0;
-        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180) + 0;
+        let X1 = radiusInvisibleLine * Math.cos(angleRadians*Math.PI/180);
+        let Y1 = radiusInvisibleLine * Math.sin(angleRadians*Math.PI/180);
+        let X2 = radiusLine * Math.cos(angleRadians*Math.PI/180);
+        let Y2 = radiusLine * Math.sin(angleRadians*Math.PI/180);
 
         svgContainer.append("line")
             .attr("x1", X1)
